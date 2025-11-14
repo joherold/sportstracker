@@ -1,11 +1,40 @@
-name: Deploy
+name: Deploy Vite App to GitHub Pages
 
+# Trigger deployment on push to main
+on:
+  push:
+    branches:
+      - main
+
+# Permissions needed for GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
-on: { push: { branches: ['main'] }}
+    steps:
+      # 1. Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-jobs: { build: { runs-on: ubuntu-latest, steps: [ { uses: 'actions/checkout@v3' }, { uses: 'actions/setup-node@v3', with: { 'node-version': 18 } }, { run: 'npm install' }, { run: 'npm run build' }, { name: 'Deploy', uses: 'peaceiris/actions-gh-pages@v4', with: { github_token: '${{ secrets.GITHUB_TOKEN }}', publish_dir: './dist' } } ] }}
+      # 2. Setup Node.js (Vite requires Node 18+)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Build the Vite app
+      - name: Build project
+        run: npm run build
+
+      # 5. Upload build artifacts for Pages
+      - name: Upload artifact
