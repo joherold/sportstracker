@@ -64,7 +64,7 @@ export default function EndurancePage() {
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h1>Endurance Tracker</h1>
+      <h1>Endurance</h1>
 
       {/* Input form */}
       <div style={{ marginBottom: "1rem" }}>

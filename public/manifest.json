@@ -1,1 +1,6 @@
-{"name":"Sports Tracker","short_name":"Tracker","start_url":".","display":"standalone"}
+{
+    "name": "sportstracker",
+    "short_name": "sportstracker",
+    "start_url": ".",
+    "display": "standalone"
+}

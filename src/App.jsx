@@ -8,7 +8,7 @@ export default function App() {
     <Router>
       <nav style={{ padding: "1rem", background: "#eee" }}>
         <Link to="/" style={{ marginRight: "1rem" }}>Home</Link>
-        <Link to="/endurance">Endurance Tracker</Link>
+        <Link to="/endurance">Endurance</Link>
       </nav>
 
       <Routes>
