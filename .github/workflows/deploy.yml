@@ -32,6 +32,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Create .env
+        run: |
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
+
       # 4. Build the Vite app
       - name: Build project
         run: npm run build
