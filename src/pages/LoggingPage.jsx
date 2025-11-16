@@ -25,6 +25,10 @@ export default function LoggingPage() {
   const [heartRate, setHeartRate] = useState("");
   const [duration, setDuration] = useState("");
 
+  const [editingSet, setEditingSet] = useState(null);
+  const [editingLap, setEditingLap] = useState(null);
+
+
   // Load exercises on page load.
   useEffect(() => {
     loadUsers();
@@ -175,6 +179,39 @@ export default function LoggingPage() {
     }
   }
 
+  async function saveSetChanges() {
+    const { error } = await supabase
+      .from('sets')
+      .update({
+        weight: editingSet.weight,
+        repetitions: editingSet.repetitions,
+        comment: editingSet.comment
+      })
+      .eq('id', editingSet.id);
+
+    if (!error) {
+      // refresh lists
+      loadSets();
+      setEditingSet(null);
+    }
+  }
+
+  async function saveLapChanges() {
+    const { error } = await supabase
+      .from('laps')
+      .update({
+        distance: editingLap.distance,
+        duration: editingLap.duration,
+        comment: editingLap.comment
+      })
+      .eq('id', editingLap.id);
+
+    if (!error) {
+      loadLaps();
+      setEditingLap(null);
+    }
+  }
+
 
   return (
       <div style={{ padding: "2rem" }}>
@@ -290,18 +327,97 @@ export default function LoggingPage() {
                 <li key={s.id}>
                   <strong>{s.exercises?.name}</strong> — {s.weight} kg × {s.repetitions}
                   {s.comment ? ` (${s.comment})` : ""}
+
+                  <button onClick={() => setEditingSet(s)}>Edit</button>
                 </li>
               ))}
             </ul>
+
 
             <ul>
               {laps.map(l => (
                 <li key={l.id}>
                   <strong>{l.exercises?.name}</strong> — {l.distance} km in {l.duration} min
                   {l.comment ? ` (${l.comment})` : ""}
+
+                  <button onClick={() => setEditingLap(l)}>Edit</button>
                 </li>
               ))}
             </ul>
+
+            {editingSet && (
+              <div className="edit-form">
+                <h3>Edit Set</h3>
+
+                <label>Weight</label>
+                <input
+                  type="number"
+                  value={editingSet.weight}
+                  onChange={(e) =>
+                    setEditingSet({ ...editingSet, weight: e.target.value })
+                  }
+                />
+
+                <label>Repetitions</label>
+                <input
+                  type="number"
+                  value={editingSet.repetitions}
+                  onChange={(e) =>
+                    setEditingSet({ ...editingSet, repetitions: e.target.value })
+                  }
+                />
+
+                <label>Comment</label>
+                <input
+                  type="text"
+                  value={editingSet.comment || ""}
+                  onChange={(e) =>
+                    setEditingSet({ ...editingSet, comment: e.target.value })
+                  }
+                />
+
+                <button onClick={saveSetChanges}>Save</button>
+                <button onClick={() => setEditingSet(null)}>Cancel</button>
+              </div>
+            )}
+
+            {editingLap && (
+              <div className="edit-form">
+                <h3>Edit Lap</h3>
+
+                <label>Distance (km)</label>
+                <input
+                  type="number"
+                  value={editingLap.distance}
+                  onChange={(e) =>
+                    setEditingLap({ ...editingLap, distance: e.target.value })
+                  }
+                />
+
+                <label>Duration (min)</label>
+                <input
+                  type="number"
+                  value={editingLap.duration}
+                  onChange={(e) =>
+                    setEditingLap({ ...editingLap, duration: e.target.value })
+                  }
+                />
+
+                <label>Comment</label>
+                <input
+                  type="text"
+                  value={editingLap.comment || ""}
+                  onChange={(e) =>
+                    setEditingLap({ ...editingLap, comment: e.target.value })
+                  }
+                />
+
+                <button onClick={saveLapChanges}>Save</button>
+                <button onClick={() => setEditingLap(null)}>Cancel</button>
+              </div>
+            )}
+
+
           </>
         )}
       </div>
